@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var StartupTab = {
+  LOADING_URI: 'startuptab-loaded-uri',
+
   get prefs() {
     var { prefs } = Cu.import('resource://startuptab-modules/prefs.js', {});
     delete this.prefs;
@@ -46,7 +48,19 @@ var StartupTab = {
     }
   },
   preInit: function StartupTab_preInit() {
-    Services.obs.addObserver(this, 'mail-tabs-session-restored', false);
+    try {
+      specialTabs.contentTabType.__startuptab__openTab = specialTabs.contentTabType.openTab;
+      specialTabs.contentTabType.openTab = this.newOpenTab;
+      Services.obs.addObserver(this, 'mail-tabs-session-restored', false);
+    }
+    catch(error) {
+      Cu.reportError(error);
+    }
+  },
+
+  newOpenTab: function StartupTab_openTab(aTab, aArgs) {
+    this.__startuptab__openTab.apply(this, arguments);
+    aTab.tabNode.setAttribute(StartupTab.LOADING_URI, aArgs.contentPage);
   },
 
   shouldOpen: function StartupTab_shouldOpen() {
@@ -54,9 +68,9 @@ var StartupTab = {
     if (!uri)
       return false;
 
-    var browsers = document.querySelectorAll('.contentTabInstance browser');
-    return Array.every(browsers, function checkTabOpened(aBrowser) {
-      return aBrowser.currentURI.spec != uri;
+    var tabs = document.querySelectorAll('tab.tabmail-tab');
+    return Array.every(tabs, function checkTabOpened(aTab) {
+      return aTab.getAttribute(this.LOADING_URI) != uri;
     }, this);
   }
 };
