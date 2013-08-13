@@ -30,15 +30,15 @@ var StartupTab = {
       return this.prefs.getPref('extensions.staruptab@clear-code.com.startup.page');
   },
 
-  handleEvent: function StartupTab_handleEvent(aEvent) {
-    switch (aEvent.type) {
-      case 'load':
+  observe: function StartupTab_observe(aSubject, aTopic, aData) {
+    switch (aTopic) {
+      case 'mail-tabs-session-restored':
         return this.init();
     }
   },
 
   init: function StartupTab_init() {
-    window.removeEventListener('load', this, false);
+    Services.obs.removeObserver(this, 'mail-tabs-session-restored');
 
     if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
       if (this.shouldOpen())
@@ -46,7 +46,7 @@ var StartupTab = {
     }
   },
   preInit: function StartupTab_preInit() {
-    window.addEventListener('load', this, false);
+    Services.obs.addObserver(this, 'mail-tabs-session-restored', false);
   },
 
   shouldOpen: function StartupTab_shouldOpen() {
