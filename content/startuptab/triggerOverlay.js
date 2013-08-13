@@ -40,9 +40,9 @@ var StartupTab = {
   init: function StartupTab_init() {
     window.removeEventListener('load', this, false);
 
-    if (this.mode > this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
+    if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
       if (this.shouldOpen())
-        tabmail.openTab('contentTab', { contentPage: this.page })
+        this.tabmail.openTab('contentTab', { contentPage: this.page })
     }
   },
   preInit: function StartupTab_preInit() {
