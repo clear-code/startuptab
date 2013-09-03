@@ -16,7 +16,7 @@ var StartupTab = {
   },
 
   get mode() {
-    var mode = this.prefs.getPref('extensions.staruptab@clear-code.com.startup.mode');
+    var mode = this.prefs.getPref('extensions.startuptab@clear-code.com.startup.mode');
     var defaultMode = this.MODE_OPEN_APPLICATION_STARTUP_PAGE;
     return mode === null ? defaultMode : mode;
   },
@@ -29,11 +29,11 @@ var StartupTab = {
     if (mode == this.MODE_OPEN_APPLICATION_STARTUP_PAGE)
       return this.prefs.getPref('mailnews.start_page.url');
     else
-      return this.prefs.getPref('extensions.staruptab@clear-code.com.startup.page');
+      return this.prefs.getPref('extensions.startuptab@clear-code.com.startup.page');
   },
 
   get loadInBackground() {
-    return this.prefs.getPref('extensions.staruptab@clear-code.com.startup.loadInBackground');
+    return this.prefs.getPref('extensions.startuptab@clear-code.com.startup.loadInBackground');
   },
 
   observe: function StartupTab_observe(aSubject, aTopic, aData) {
@@ -47,6 +47,7 @@ var StartupTab = {
     Services.obs.removeObserver(this, 'mail-tabs-session-restored');
 
     if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
+    alert(this.loadInBackground);
       if (this.shouldOpen())
         this.tabmail.openTab('contentTab', {
           contentPage: this.page,
