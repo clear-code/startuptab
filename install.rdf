@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="startuptab@clear-code.com"
                    em:name="Startup Tab"
-                   em:version="1.0"
+                   em:version="1.1"
                    em:description="Opens specified page as a tab, on the startup."
                    em:creator="ClearCode Inc."
                    em:homepageURL="http://www.clear-code.com/">
