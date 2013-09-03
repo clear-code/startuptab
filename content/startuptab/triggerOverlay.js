@@ -32,6 +32,10 @@ var StartupTab = {
       return this.prefs.getPref('extensions.staruptab@clear-code.com.startup.page');
   },
 
+  get loadInBackground() {
+    return this.prefs.getPref('extensions.staruptab@clear-code.com.startup.loadInBackground');
+  },
+
   observe: function StartupTab_observe(aSubject, aTopic, aData) {
     switch (aTopic) {
       case 'mail-tabs-session-restored':
@@ -44,7 +48,10 @@ var StartupTab = {
 
     if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
       if (this.shouldOpen())
-        this.tabmail.openTab('contentTab', { contentPage: this.page })
+        this.tabmail.openTab('contentTab', {
+          contentPage: this.page,
+          background:  this.loadInBackground
+        })
     }
   },
   preInit: function StartupTab_preInit() {

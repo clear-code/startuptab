@@ -5,3 +5,4 @@
  */
 // pref("extensions.staruptab@clear-code.com.startup.mode", 0);
 // pref("extensions.staruptab@clear-code.com.startup.page", "about:");
+// pref("extensions.staruptab@clear-code.com.startup.loadInBackground", true);
