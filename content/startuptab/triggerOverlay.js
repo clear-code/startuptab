@@ -47,7 +47,6 @@ var StartupTab = {
     Services.obs.removeObserver(this, 'mail-tabs-session-restored');
 
     if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
-    alert(this.loadInBackground);
       if (this.shouldOpen())
         this.tabmail.openTab('contentTab', {
           contentPage: this.page,
