@@ -78,11 +78,11 @@ var StartupTab = {
         if ('canClose' in aPage)
           canClose = aPage.canClose;
         if (this.shouldOpen(aPage)) {
-          this.tabmail.openTab('contentTab', {
+          let tab = this.tabmail.openTab('contentTab', {
             contentPage: aPage.uri,
-            background:  background,
-            canClose:    canClose
+            background:  background
           })
+          tab.canClose = canClose;
         }
       }, this);
     }
