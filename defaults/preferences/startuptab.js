@@ -6,5 +6,9 @@
  */
 // pref("extensions.startuptab@clear-code.com.startup.mode", 0);
 // pref("extensions.startuptab@clear-code.com.startup.page", "about:");
+//// JSON properties:
+////   * uri (String)
+////   * canClose (Boolean, default=true)
+////   * background (Boolean, default=false)
 // pref("extensions.startuptab@clear-code.com.startup.pages", "[{\"uri\":\"about:\"}]");
 // pref("extensions.startuptab@clear-code.com.startup.loadInBackground", true);

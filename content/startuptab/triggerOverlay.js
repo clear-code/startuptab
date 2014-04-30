@@ -74,10 +74,14 @@ var StartupTab = {
         let background = this.loadInBackground;
         if ('background' in aPage)
           background = aPage.background;
+        let canClose = true;
+        if ('canClose' in aPage)
+          canClose = aPage.canClose;
         if (this.shouldOpen(aPage.uri)) {
           this.tabmail.openTab('contentTab', {
             contentPage: aPage.uri,
-            background:  background
+            background:  background,
+            canClose:    canClose
           })
         }
       }
