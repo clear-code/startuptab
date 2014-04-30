@@ -50,12 +50,12 @@ var StartupTab = {
     });
     return uris.map(function(aURI) {
       return {
-        uri:              aURI,
-        loadInBackground: this.loadInBackground
+        uri:        aURI,
+        background: this.background
       };
     });
   },
-  get loadInBackground() {
+  get background() {
     return this.prefs.getPref('extensions.startuptab@clear-code.com.startup.loadInBackground');
   },
 
@@ -71,13 +71,13 @@ var StartupTab = {
 
     if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
       this.pages.forEach(function(aPage) {
-        let loadInBackground = this.loadInBackground;
-        if ('loadInBackground' in aPage)
-          loadInBackground = aPage.loadInBackground;
+        let background = this.loadInBackground;
+        if ('background' in aPage)
+          background = aPage.background;
         if (this.shouldOpen(aPage.uri)) {
           this.tabmail.openTab('contentTab', {
             contentPage: aPage.uri,
-            background:  loadInBackground
+            background:  background
           })
         }
       }
