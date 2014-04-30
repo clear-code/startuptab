@@ -23,15 +23,38 @@ var StartupTab = {
   MODE_NONE:                          -1,
   MODE_OPEN_APPLICATION_STARTUP_PAGE: 0,
   MODE_OPEN_SPECIFIED_PAGE:           1,
+  MODE_OPEN_SPECIFIED_PAGES:          2,
 
-  get page() {
-    var mode = this.mode;
-    if (mode == this.MODE_OPEN_APPLICATION_STARTUP_PAGE)
-      return this.prefs.getPref('mailnews.start_page.url');
-    else
-      return this.prefs.getPref('extensions.startuptab@clear-code.com.startup.page');
+  get pages() {
+    switch (this.mode) {
+      case this.MODE_OPEN_APPLICATION_STARTUP_PAGE:
+        return this._getPagesFromPref('mailnews.start_page.url');
+      case this.MODE_OPEN_SPECIFIED_PAGE:
+        return this._getPagesFromPref('extensions.startuptab@clear-code.com.startup.page');
+      case this.MODE_OPEN_SPECIFIED_PAGES:
+        let (pages = this.prefs.getPref('extensions.startuptab@clear-code.com.startup.pages')) {
+          try {
+            return JSON.parse(pages || '[]');
+          } catch(e) {
+            return [];
+          }
+        }
+      default:
+        return [];
+    }
   },
-
+  _getPagesFromPref: function(aKey) {
+    var uris = this.prefs.getPref(aKey);
+    uris = (uris || '').split('|').filter(function(aURI) {
+      return Boolean(aURI);
+    });
+    return uris.map(function(aURI) {
+      return {
+        uri:              aURI,
+        loadInBackground: this.loadInBackground
+      };
+    });
+  },
   get loadInBackground() {
     return this.prefs.getPref('extensions.startuptab@clear-code.com.startup.loadInBackground');
   },
@@ -47,11 +70,17 @@ var StartupTab = {
     Services.obs.removeObserver(this, 'mail-tabs-session-restored');
 
     if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
-      if (this.shouldOpen())
-        this.tabmail.openTab('contentTab', {
-          contentPage: this.page,
-          background:  this.loadInBackground
-        })
+      this.pages.forEach(function(aPage) {
+        let loadInBackground = this.loadInBackground;
+        if ('loadInBackground' in aPage)
+          loadInBackground = aPage.loadInBackground;
+        if (this.shouldOpen(aPage.uri)) {
+          this.tabmail.openTab('contentTab', {
+            contentPage: aPage.uri,
+            background:  loadInBackground
+          })
+        }
+      }
     }
   },
   preInit: function StartupTab_preInit() {
@@ -70,14 +99,13 @@ var StartupTab = {
     aTab.tabNode.setAttribute(StartupTab.LOADING_URI, aArgs.contentPage);
   },
 
-  shouldOpen: function StartupTab_shouldOpen() {
-    var uri = this.page;
-    if (!uri)
+  shouldOpen: function StartupTab_shouldOpen(aURI) {
+    if (!aURI)
       return false;
 
     var tabs = document.querySelectorAll('tab.tabmail-tab');
     return Array.every(tabs, function checkTabOpened(aTab) {
-      return aTab.getAttribute(this.LOADING_URI) != uri;
+      return aTab.getAttribute(this.LOADING_URI) != aURI;
     }, this);
   }
 };
