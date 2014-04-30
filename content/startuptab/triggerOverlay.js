@@ -84,7 +84,7 @@ var StartupTab = {
             canClose:    canClose
           })
         }
-      }
+      }, this);
     }
   },
   preInit: function StartupTab_preInit() {
