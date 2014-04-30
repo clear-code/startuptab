@@ -77,7 +77,7 @@ var StartupTab = {
         let canClose = true;
         if ('canClose' in aPage)
           canClose = aPage.canClose;
-        if (this.shouldOpen(aPage.uri)) {
+        if (this.shouldOpen(aPage)) {
           this.tabmail.openTab('contentTab', {
             contentPage: aPage.uri,
             background:  background,
@@ -103,13 +103,13 @@ var StartupTab = {
     aTab.tabNode.setAttribute(StartupTab.LOADING_URI, aArgs.contentPage);
   },
 
-  shouldOpen: function StartupTab_shouldOpen(aURI) {
-    if (!aURI)
+  shouldOpen: function StartupTab_shouldOpen(aPage) {
+    if (!aPage.uri)
       return false;
 
     var tabs = document.querySelectorAll('tab.tabmail-tab');
     return Array.every(tabs, function checkTabOpened(aTab) {
-      return aTab.getAttribute(this.LOADING_URI) != aURI;
+      return aTab.getAttribute(this.LOADING_URI) != aPage.uri;
     }, this);
   }
 };
