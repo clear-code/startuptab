@@ -84,6 +84,11 @@ var StartupTab = {
           })
           tab.canClose = canClose;
         }
+        else {
+          let tab = this.getExistingTab(aPage.uri);
+          if (tab)
+            tab.canClose = canClose;
+        }
       }, this);
     }
   },
@@ -107,10 +112,15 @@ var StartupTab = {
     if (!aPage.uri)
       return false;
 
+    return !this.getExistingTab(aPage.uri);
+  },
+
+  getExistingTab: function StartpTab_getExistingTab(aURI) {
     var tabs = document.querySelectorAll('tab.tabmail-tab');
-    return Array.every(tabs, function checkTabOpened(aTab) {
-      return aTab.getAttribute(this.LOADING_URI) != aPage.uri;
+    tabs = Array.filter(tabs, function checkTabOpened(aTab) {
+      return aTab.getAttribute(this.LOADING_URI) == aURI;
     }, this);
+    return tabs.length > 0 ? tabs[0] : null ;
   }
 };
 StartupTab.preInit();
