@@ -120,7 +120,25 @@ var StartupTab = {
     tabs = Array.filter(tabs, function checkTabOpened(aTab) {
       return aTab.getAttribute(this.LOADING_URI) == aURI;
     }, this);
-    return tabs.length > 0 ? tabs[0] : null ;
+    var tabElement = tabs.length > 0 ? tabs[0] : null ;
+    if (!tabElement)
+      return null;
+
+    var tabModes = this.tabmail.tabModes;
+    var tab = null;
+    Object.keys(tabModes).some(function(aMode) {
+      var tabMode = tabModes[aMode]
+      tabMode.tabs.some(function(aTab) {
+        if (aTab.tabNode == tabElement) {
+          tab = aTab;
+          return true;
+        }
+        else {
+          return false;
+        }
+      });
+    });
+    return tab;
   }
 };
 StartupTab.preInit();
