@@ -71,7 +71,7 @@ var StartupTab = {
 
     if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
       this.pages.forEach(function(aPage) {
-        let background = this.loadInBackground;
+        let background = this.background;
         if ('background' in aPage)
           background = Boolean(aPage.background);
         let canClose = true;
