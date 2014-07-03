@@ -79,7 +79,7 @@ var StartupTab = {
           canClose = Boolean(aPage.canClose);
         if (this.shouldOpen(aPage)) {
           let tab = this.tabmail.openTab('contentTab', {
-            contentPage: aPage.uri,
+            contentPage: aPage.uri.trim(),
             background:  background
           })
           tab.canClose = canClose;
@@ -96,6 +96,8 @@ var StartupTab = {
     try {
       specialTabs.contentTabType.__startuptab__openTab = specialTabs.contentTabType.openTab;
       specialTabs.contentTabType.openTab = this.newOpenTab;
+      specialTabs.contentTabType.__startuptab__restoreTab = specialTabs.contentTabType.restoreTab;
+      specialTabs.contentTabType.newRestoreTab = this.newRestoreTab;
       Services.obs.addObserver(this, 'mail-tabs-session-restored', false);
     }
     catch(error) {
@@ -108,17 +110,24 @@ var StartupTab = {
     aTab.tabNode.setAttribute(StartupTab.LOADING_URI, aArgs.contentPage);
   },
 
+  newRestoreTab: function StartupTab_restoreTab(aTabmail, aPersistedState) {
+    this.__startuptab__restoreTab.apply(this, arguments);
+    var lastOpenedTab = aTabmail.tabContainer.lastChild;
+    lastOpenedTab.setAttribute(StartupTab.LOADING_URI, aPersistedState.tabURI);
+  },
+
   shouldOpen: function StartupTab_shouldOpen(aPage) {
-    if (!aPage.uri)
+    var uri = (aPage.uri || '').trim();
+    if (!uri)
       return false;
 
-    return !this.getExistingTab(aPage.uri);
+    return !this.getExistingTab(uri);
   },
 
   getExistingTab: function StartpTab_getExistingTab(aURI) {
     var tabs = document.querySelectorAll('tab.tabmail-tab');
     tabs = Array.filter(tabs, function checkTabOpened(aTab) {
-      return aTab.getAttribute(this.LOADING_URI) == aURI;
+      return aTab.getAttribute(this.LOADING_URI).trim() == aURI;
     }, this);
     var tabElement = tabs.length > 0 ? tabs[0] : null ;
     if (!tabElement)
@@ -127,7 +136,7 @@ var StartupTab = {
     var tabModes = this.tabmail.tabModes;
     var tab = null;
     Object.keys(tabModes).some(function(aMode) {
-      var tabMode = tabModes[aMode]
+      var tabMode = tabModes[aMode];
       tabMode.tabs.some(function(aTab) {
         if (aTab.tabNode == tabElement) {
           tab = aTab;
