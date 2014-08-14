@@ -147,7 +147,7 @@ var StartupTab = {
     Object.keys(tabModes).some(function(aMode) {
       var tabMode = tabModes[aMode];
       tabMode.tabs.some(function(aTab) {
-        var uri = this.getContentURIFromTab(aTab);
+        var uri = this.getLoadingURIFromTab(aTab) || this.getCurrentURIFromTab(aTab);
         if (uri == aURI) {
           tab = aTab;
           return true;
@@ -161,9 +161,6 @@ var StartupTab = {
   /**
    * PUBLIC API to get the content URI of a tab
    */
-  getContentURIFromTab: function StartupTab_getContentURIFromTab(aTab) {
-    return this.getLoadingURIFromTab(aTab) || this.getCurrentURIFromTab(aTab);
-  },
   getLoadingURIFromTab: function StartupTab_getLoadingURIFromTab(aTab) {
     return aTab.tabNode && aTab.tabNode.getAttribute(this.LOADING_URI).trim();
   },
@@ -176,7 +173,11 @@ var StartupTab = {
     if (!browser)
       return null;
 
-    return browser.currentURI && browser.currentURI.spec;
+    var uri = browser.currentURI && browser.currentURI.spec;
+    if (uri == 'about:blank')
+      return null;
+
+    return uri;
   }
 };
 StartupTab.preInit();
