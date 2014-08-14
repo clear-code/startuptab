@@ -69,28 +69,8 @@ var StartupTab = {
   init: function StartupTab_init() {
     Services.obs.removeObserver(this, 'mail-tabs-session-restored');
 
-    if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE) {
-      this.pages.forEach(function(aPage) {
-        let background = this.background;
-        if ('background' in aPage)
-          background = Boolean(aPage.background);
-        let canClose = true;
-        if ('canClose' in aPage)
-          canClose = Boolean(aPage.canClose);
-        if (this.shouldOpen(aPage)) {
-          let tab = this.tabmail.openTab('contentTab', {
-            contentPage: aPage.uri.trim(),
-            background:  background
-          })
-          tab.canClose = canClose;
-        }
-        else {
-          let tab = this.getExistingTab(aPage.uri);
-          if (tab)
-            tab.canClose = canClose;
-        }
-      }, this);
-    }
+    if (this.mode >= this.MODE_OPEN_APPLICATION_STARTUP_PAGE)
+      this.pages.forEach(this.openPage, this);
   },
   preInit: function StartupTab_preInit() {
     try {
@@ -114,6 +94,29 @@ var StartupTab = {
     this.__startuptab__restoreTab.apply(this, arguments);
     var lastOpenedTab = aTabmail.tabContainer.lastChild;
     lastOpenedTab.setAttribute(StartupTab.LOADING_URI, aPersistedState.tabURI);
+  },
+
+  openPage: function StartupTab_openPage(aPage) {
+    var background = this.background;
+    if ('background' in aPage)
+      background = Boolean(aPage.background);
+
+    var canClose = true;
+    if ('canClose' in aPage)
+      canClose = Boolean(aPage.canClose);
+
+    if (this.shouldOpen(aPage)) {
+      let tab = this.tabmail.openTab('contentTab', {
+        contentPage: aPage.uri.trim(),
+        background:  background
+      })
+      tab.canClose = canClose;
+    }
+    else {
+      let tab = this.getExistingTab(aPage.uri);
+      if (tab)
+        tab.canClose = canClose;
+    }
   },
 
   shouldOpen: function StartupTab_shouldOpen(aPage) {
