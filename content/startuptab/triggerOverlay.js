@@ -96,6 +96,14 @@ var StartupTab = {
     lastOpenedTab.setAttribute(StartupTab.LOADING_URI, aPersistedState.tabURI);
   },
 
+  /**
+   * required properties of aPage:
+   *   String  uri
+   *
+   * optional properties of aPage:
+   *   Boolean background (default=extensions.startuptab@clear-code.com.startup.loadInBackground)
+   *   Boolean canClose (default=true)
+   */
   openPage: function StartupTab_openPage(aPage) {
     var background = this.background;
     if ('background' in aPage)
