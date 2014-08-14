@@ -141,7 +141,7 @@ var StartupTab = {
   /**
    * PUBLIC API to get a tab from its content URI
    */
-  getExistingTab: function StartpTab_getExistingTab(aURI) {
+  getExistingTab: function StartupTab_getExistingTab(aURI) {
     var tabModes = this.tabmail.tabModes;
     var tab = null;
     Object.keys(tabModes).some(function(aMode) {
