@@ -97,6 +97,8 @@ var StartupTab = {
   },
 
   /**
+   * PUBLIC API to open a new tab as a startup tab
+   *
    * required properties of aPage:
    *   String  uri
    *
