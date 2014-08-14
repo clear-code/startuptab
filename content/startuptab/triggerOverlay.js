@@ -128,7 +128,6 @@ var StartupTab = {
         tab.canClose = canClose;
     }
   },
-
   shouldOpen: function StartupTab_shouldOpen(aPage) {
     var uri = (aPage.uri || '').trim();
     if (!uri)
@@ -141,53 +140,41 @@ var StartupTab = {
    * PUBLIC API to get a tab from its content URI
    */
   getExistingTab: function StartpTab_getExistingTab(aURI) {
-    var tabs = document.querySelectorAll('tab.tabmail-tab');
-    tabs = Array.filter(tabs, function checkTabOpened(aTab) {
-      return aTab.getAttribute(this.LOADING_URI).trim() == aURI;
-    }, this);
-    var tabElement = tabs.length > 0 ? tabs[0] : null ;
-    if (!tabElement)
-      return this.getExistingTabFromCurrentURI(aURI);;
-
     var tabModes = this.tabmail.tabModes;
     var tab = null;
     Object.keys(tabModes).some(function(aMode) {
       var tabMode = tabModes[aMode];
       tabMode.tabs.some(function(aTab) {
-        if (aTab.tabNode == tabElement) {
+        var uri = this.getContentURIFromTab(aTab);
+        if (uri == aURI) {
           tab = aTab;
           return true;
         }
-        else {
-          return false;
-        }
-      });
-    });
+        return false;
+      }, this);
+    }, this);
     return tab;
   },
-  getExistingTabFromCurrentURI: function StartupTab_getExistingTabFromCurrentURI(aURI) {
-    var tabModes = this.tabmail.tabModes;
-    var tab = null;
-    Object.keys(tabModes).some(function(aMode) {
-      var tabMode = tabModes[aMode];
-      return tabMode.tabs.some(function(aTab) {
-        var browserFunc = aTab.mode.getBrowser || aTab.mode.tabType.getBrowser;
-        if (!browserFunc)
-          return false;
 
-        var browser = browserFunc.call(aTab.mode.tabType, aTab);
-        if (!browser)
-          return false;
+  /**
+   * PUBLIC API to get the content URI of a tab
+   */
+  getContentURIFromTab: function StartupTab_getContentURIFromTab(aTab) {
+    return this.getLoadingURIFromTab(aTab) || this.getCurrentURIFromTab(aTab);
+  },
+  getLoadingURIFromTab: function StartupTab_getLoadingURIFromTab(aTab) {
+    return aTab.tabNode && aTab.tabNode.getAttribute(this.LOADING_URI).trim();
+  },
+  getCurrentURIFromTab: function StartupTab_getCurrentURIFromTab(aTab) {
+    var browserFunc = aTab.mode.getBrowser || aTab.mode.tabType.getBrowser;
+    if (!browserFunc)
+      return null;
 
-        if (browser.currentURI && browser.currentURI.spec == aURI) {
-          tab = aTab;
-          return true;
-        }
+    var browser = browserFunc.call(aTab.mode.tabType, aTab);
+    if (!browser)
+      return null;
 
-        return false;
-      });
-    });
-    return tab;
+    return browser.currentURI && browser.currentURI.spec;
   }
 };
 StartupTab.preInit();
