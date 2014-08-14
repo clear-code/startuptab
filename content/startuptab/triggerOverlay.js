@@ -116,14 +116,14 @@ var StartupTab = {
       canClose = Boolean(aPage.canClose);
 
     if (this.shouldOpen(aPage)) {
-      let tab = this.tabmail.openTab('contentTab', {
+      tab = this.tabmail.openTab('contentTab', {
         contentPage: aPage.uri.trim(),
         background:  background
       })
       tab.canClose = canClose;
     }
     else {
-      let tab = this.getExistingTab(aPage.uri);
+      tab = this.getExistingTab(aPage.uri);
       if (tab)
         tab.canClose = canClose;
     }
