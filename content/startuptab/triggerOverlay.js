@@ -180,7 +180,7 @@ var StartupTab = {
           return false;
 
         if (browser.currentURI && browser.currentURI.spec == aURL) {
-          tab = aTab.tabNode;
+          tab = aTab;
           return true;
         }
 
