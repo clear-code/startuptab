@@ -127,6 +127,8 @@ var StartupTab = {
       if (tab)
         tab.canClose = canClose;
     }
+
+    return tab;
   },
   shouldOpen: function StartupTab_shouldOpen(aPage) {
     var uri = (aPage.uri || '').trim();
