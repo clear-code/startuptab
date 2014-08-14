@@ -179,7 +179,7 @@ var StartupTab = {
         if (!browser)
           return false;
 
-        if (browser.currentURI && browser.currentURI.spec == aURL) {
+        if (browser.currentURI && browser.currentURI.spec == aURI) {
           tab = aTab;
           return true;
         }
