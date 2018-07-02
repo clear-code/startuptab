@@ -31,8 +31,8 @@ var StartupTab = {
         return this._getPagesFromPref('mailnews.start_page.url');
       case this.MODE_OPEN_SPECIFIED_PAGE:
         return this._getPagesFromPref('extensions.startuptab@clear-code.com.startup.page');
-      case this.MODE_OPEN_SPECIFIED_PAGES:
-        let (pages = this.prefs.getPref('extensions.startuptab@clear-code.com.startup.pages')) {
+      case this.MODE_OPEN_SPECIFIED_PAGES: {
+          let pages = this.prefs.getPref('extensions.startuptab@clear-code.com.startup.pages');
           try {
             return JSON.parse(pages || '[]');
           } catch(e) {
