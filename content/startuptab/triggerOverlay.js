@@ -53,7 +53,7 @@ var StartupTab = {
         uri:        aURI,
         background: this.background
       };
-    });
+    }, this);
   },
   get background() {
     return this.prefs.getPref('extensions.startuptab@clear-code.com.startup.loadInBackground');
