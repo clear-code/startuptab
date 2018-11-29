@@ -77,7 +77,7 @@ var StartupTab = {
       specialTabs.contentTabType.__startuptab__openTab = specialTabs.contentTabType.openTab;
       specialTabs.contentTabType.openTab = this.newOpenTab;
       specialTabs.contentTabType.__startuptab__restoreTab = specialTabs.contentTabType.restoreTab;
-      specialTabs.contentTabType.newRestoreTab = this.newRestoreTab;
+      specialTabs.contentTabType.restoreTab = this.newRestoreTab;
       Services.obs.addObserver(this, 'mail-tabs-session-restored', false);
     }
     catch(error) {
